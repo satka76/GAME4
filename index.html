@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>Azeri Casino • Mini Oyunlar (v6.1)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <img src="assets/bg1.png" class="bg" id="bg1" alt="bg1">
+  <img src="assets/bg2.png" class="bg hidden" id="bg2" alt="bg2">
+  <img src="assets/bg3.png" class="bg hidden" id="bg3" alt="bg3">
+
+  <div class="langbar">
+    <img src="assets/flag-az.png" id="langAZ" class="flag" alt="AZ">
+    <img src="assets/flag-ru.png" id="langRU" class="flag" alt="RU">
+    <button id="muteBtn" class="mute">🔊</button>
+  </div>
+  <audio id="bgm" loop preload="auto">
+    <source src="assets/bgm.wav" type="audio/wav">
+  </audio>
+
+  <div id="app">
+    <header class="hdr glass">
+      <button id="backBtn" class="link" hidden>← <span data-i18n="back">Geri</span></button>
+      <div class="ttl"><img src="assets/icon.png" class="mascot" alt="m"><h1 id="appTitle" data-i18n="app_title">Mini Oyunlar • Azeri Casino Stili</h1></div>
+      <div class="hud">
+        <span class="muted" data-i18n="plays">Cəhdlər:</span> <b id="playsCounter">0/3</b>
+        <span class="sep">•</span>
+        <span class="muted" data-i18n="coins_label">Sikkələr</span>: <b id="coins">100</b>
+      </div>
+    </header>
+
+    <main id="screenMenu" class="screen">
+      <div class="grid">
+        <div class="card clickable glass gamecard" data-next="slots">
+          <div class="gicon">🎰</div>
+          <div class="gtitle" data-i18n="slots">Slot maşını</div>
+          <div class="gdesc" data-i18n="slots_desc">3×3, WILD, xətt</div>
+        </div>
+        <div class="card clickable glass gamecard" data-next="dice">
+          <div class="gicon">🎲</div>
+          <div class="gtitle" data-i18n="dice">Zər atma</div>
+          <div class="gdesc" data-i18n="dice_desc">3D kub</div>
+        </div>
+        <div class="card clickable glass gamecard" data-next="cards">
+          <div class="gicon">🃏</div>
+          <div class="gtitle" data-i18n="cards">Kart aç</div>
+          <div class="gdesc" data-i18n="cards_desc">Flip animasiya</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Slots -->
+    <main id="screenSlots" class="screen hidden">
+      <div class="card glass center">
+        <div class="reels r3x3" id="rgrid">
+          <div class="reel cell" id="cell0">❔</div>
+          <div class="reel cell" id="cell1">❔</div>
+          <div class="reel cell" id="cell2">❔</div>
+          <div class="reel cell" id="cell3">❔</div>
+          <div class="reel cell" id="cell4">❔</div>
+          <div class="reel cell" id="cell5">❔</div>
+          <div class="reel cell" id="cell6">❔</div>
+          <div class="reel cell" id="cell7">❔</div>
+          <div class="reel cell" id="cell8">❔</div>
+        </div>
+        <div class="seg">
+          <button class="btn" id="spinBtn" data-i18n="spin">Fırlat</button>
+          <button class="btn alt" id="swapBgBtn" data-i18n="swap_bg">Fon dəyiş</button>
+        </div>
+        <div id="slotsMsg" class="msg"></div>
+      </div>
+    </main>
+
+    <!-- Dice -->
+    <main id="screenDice" class="screen hidden">
+      <div class="card glass center">
+        <div class="muted" data-i18n="bet_place">Bahis qoy: 5</div>
+        <div class="seg">
+          <button class="toggle" id="pickHigher" data-selected="true" data-i18n="choose_higher">Yuxarı gələcək</button>
+          <button class="toggle" id="pickLower" data-i18n="choose_lower">Aşağı gələcək</button>
+        </div>
+        <div class="cube-wrap">
+          <div class="cube" id="diceCube">
+            <div class="face one"><span></span></div>
+            <div class="face two"><span></span></div>
+            <div class="face three"><span></span></div>
+            <div class="face four"><span></span></div>
+            <div class="face five"><span></span></div>
+            <div class="face six"><span></span></div>
+          </div>
+        </div>
+        <button class="btn" id="rollBtn" data-i18n="roll">At</button>
+        <div id="diceResult" class="msg"></div>
+      </div>
+    </main>
+
+    <!-- Cards -->
+    <main id="screenCards" class="screen hidden">
+      <div class="card glass">
+        <div class="muted" data-i18n="pick_a_card">Kart seçin</div>
+        <div class="cards">
+          <div class="flip" data-idx="0"><div class="inner"><div class="front">🂠</div><div class="back">🏆</div></div></div>
+          <div class="flip" data-idx="1"><div class="inner"><div class="front">🂠</div><div class="back">🏆</div></div></div>
+          <div class="flip" data-idx="2"><div class="inner"><div class="front">🂠</div><div class="back">🏆</div></div></div>
+        </div>
+        <div id="cardsMsg" class="msg"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dicebet Modal -->
+  <div id="adModal" class="center-modal hidden" style="display:none" role="dialog" aria-modal="true">
+    <div class="center-backdrop" id="adBackdrop"></div>
+    <div class="center-card">
+      <h3 class="title" data-i18n="ad_title_big">Təbrik edirik!</h3>
+      <p class="muted" data-i18n="ad_copy_center">Sizi burada gözləyirik — Dicebet.</p>
+      <a class="btn big" href="https://dicebet.com" target="_blank" rel="noopener" data-i18n="ad_go_center">Buraya keç</a>
+      <button class="link" id="closeAd" data-i18n="ad_close">Bağla</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
